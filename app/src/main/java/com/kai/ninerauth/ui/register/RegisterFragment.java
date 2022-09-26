@@ -37,6 +37,14 @@ public class RegisterFragment extends Fragment {
                         .navigate(R.id.action_SecondFragment_to_FirstFragment);
             }
         });
+
+        binding.buttonRegisterSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                NavHostFragment.findNavController(RegisterFragment.this)
+                        .navigate(R.id.action_SecondFragment_to_ProfileFragment);
+            }
+        });
     }
 
     @Override

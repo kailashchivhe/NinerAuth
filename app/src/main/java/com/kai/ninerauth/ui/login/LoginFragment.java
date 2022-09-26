@@ -34,6 +34,14 @@ public class LoginFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 NavHostFragment.findNavController(LoginFragment.this)
+                        .navigate(R.id.action_FirstFragment_to_ProfileFragment);
+            }
+        });
+
+        binding.buttonRegistration.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                NavHostFragment.findNavController(LoginFragment.this)
                         .navigate(R.id.action_FirstFragment_to_SecondFragment);
             }
         });
