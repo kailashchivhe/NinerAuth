@@ -1,4 +1,4 @@
-package com.kai.ninerauth;
+package com.kai.ninerauth.ui.login;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,9 +9,10 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
+import com.kai.ninerauth.R;
 import com.kai.ninerauth.databinding.FragmentFirstBinding;
 
-public class FirstFragment extends Fragment {
+public class LoginFragment extends Fragment {
 
     private FragmentFirstBinding binding;
 
@@ -32,7 +33,7 @@ public class FirstFragment extends Fragment {
         binding.buttonFirst.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                NavHostFragment.findNavController(FirstFragment.this)
+                NavHostFragment.findNavController(LoginFragment.this)
                         .navigate(R.id.action_FirstFragment_to_SecondFragment);
             }
         });
