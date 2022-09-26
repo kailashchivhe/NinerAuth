@@ -1,5 +1,8 @@
 package com.kai.ninerauth.util;
 
+import com.kai.ninerauth.ui.login.LoginListener;
+import com.kai.ninerauth.ui.register.RegisterListener;
+
 public class DataSingleton {
     private static DataSingleton instance;
 
@@ -14,4 +17,11 @@ public class DataSingleton {
     }
 
     //TODO add OkayHttp calls
+    public static void login(String email, String password, LoginListener loginListener) {
+
+    }
+
+    public static void register(String email, String password, String firstName, String lastName, RegisterListener registerListener) {
+
+    }
 }

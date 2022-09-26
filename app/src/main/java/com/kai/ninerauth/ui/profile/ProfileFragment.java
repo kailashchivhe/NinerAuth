@@ -19,7 +19,7 @@ import com.kai.ninerauth.databinding.FragmentProfileBinding;
  * Use the {@link ProfileFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ProfileFragment extends Fragment {
+public class ProfileFragment extends Fragment implements ProfileListener{
 
     private FragmentProfileBinding binding;
 
@@ -89,5 +89,15 @@ public class ProfileFragment extends Fragment {
                         .navigate(R.id.action_ProfileFragment_to_FirstFragment);
             }
         });
+    }
+
+    @Override
+    public void profileUpdate() {
+
+    }
+
+    @Override
+    public void profileUpdateFailed(String message) {
+
     }
 }
