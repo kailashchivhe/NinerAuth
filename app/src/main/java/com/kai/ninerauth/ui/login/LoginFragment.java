@@ -66,11 +66,7 @@ public class LoginFragment extends Fragment implements LoginListener {
         String password = binding.editTextLoginPassword.getText().toString();
 
         if(!email.isEmpty() && !password.isEmpty()) {
-            try {
-                DataSingleton.login(email, password, this);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            DataSingleton.login(email, password, this);
         } else {
             builder.setMessage("Please fill out all required fields");
             AlertDialog alertDialog = builder.create();
@@ -91,8 +87,14 @@ public class LoginFragment extends Fragment implements LoginListener {
 
     @Override
     public void loggedIn() {
-        NavHostFragment.findNavController(LoginFragment.this)
-                .navigate(R.id.action_FirstFragment_to_ProfileFragment);
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                NavHostFragment.findNavController(LoginFragment.this)
+                        .navigate(R.id.action_FirstFragment_to_ProfileFragment);
+            }
+        });
+
     }
 
     @Override

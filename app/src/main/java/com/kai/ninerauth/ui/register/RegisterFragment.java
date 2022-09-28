@@ -72,11 +72,7 @@ public class RegisterFragment extends Fragment implements RegisterListener {
         String password = binding.editTextRegisterPassword.getText().toString();
 
         if(!email.isEmpty() && !password.isEmpty() && !firstName.isEmpty() && !lastName.isEmpty()) {
-            try {
-                DataSingleton.register(email, password, firstName, lastName, this);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            DataSingleton.register(email, password, firstName, lastName, this);
         } else {
             builder.setMessage("Please fill out all required fields");
             AlertDialog alertDialog = builder.create();
@@ -92,8 +88,14 @@ public class RegisterFragment extends Fragment implements RegisterListener {
 
     @Override
     public void registered() {
-        NavHostFragment.findNavController(RegisterFragment.this)
-                .navigate(R.id.action_SecondFragment_to_ProfileFragment);
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                NavHostFragment.findNavController(RegisterFragment.this)
+                        .navigate(R.id.action_SecondFragment_to_ProfileFragment);
+            }
+        });
+
     }
 
     @Override

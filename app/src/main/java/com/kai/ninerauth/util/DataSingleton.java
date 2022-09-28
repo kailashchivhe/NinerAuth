@@ -1,6 +1,11 @@
 package com.kai.ninerauth.util;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 
 import com.kai.ninerauth.ui.login.LoginListener;
 import com.kai.ninerauth.ui.register.RegisterListener;
@@ -10,6 +15,9 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -19,6 +27,7 @@ import okhttp3.Response;
 public class DataSingleton {
     private static DataSingleton instance;
     private static final OkHttpClient client = new OkHttpClient();
+    private static final String TAG = "DataSingleton";
 
     public static DataSingleton getInstance(){
         if( instance == null ){
@@ -30,70 +39,100 @@ public class DataSingleton {
     public DataSingleton() {
     }
 
-    //TODO add OkayHttp calls
-    public static void login(String email, String password, LoginListener loginListener) throws Exception{
-        JSONObject loginObject = new JSONObject();
-        try{
-            loginObject.put("email", email);
-            loginObject.put("password", password);
-        } catch(JSONException jse) {
-            jse.printStackTrace();
-        }
-
-        final MediaType MEDIA_TYPE_JSON
-                = MediaType.parse("application/json; charset=utf-8");
-
-        String postBody = loginObject.toString();
+    public static void login(String email, String password, LoginListener loginListener) {
+         FormBody formBody = new FormBody.Builder()
+                .add("email", email)
+                .add("password", password)
+                .build();
 
         Request request = new Request.Builder()
                 .url("https://node-authenticator-uncc.herokuapp.com/api/auth/login")
-                .post(RequestBody.create(postBody, MEDIA_TYPE_JSON))
+                .post(formBody)
                 .build();
 
-        try (Response response = client.newCall(request).execute()) {
-            if (!response.isSuccessful()){
-                loginListener.loggedInFailure(response.message());
-                throw new IOException("Unexpected code " + response);
-            } else {
-                loginListener.loggedIn();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                e.printStackTrace();
             }
 
-            System.out.println(response.body().string());
-        }
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                if(response.isSuccessful()){
+                    try {
+                        JSONObject res = new JSONObject(response.body().string());
+                        String status = res.getString("status");
+                        JSONObject user = res.getJSONObject("data");
+                        Log.d(TAG, "onResponse: login status " + status);
+                        Log.d(TAG, "user is: " + user);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    loginListener.loggedIn();
+                } else {
+                    try {
+                        JSONObject loginFailure = new JSONObject(response.body().toString());
+                        Log.d(TAG, loginFailure.getString("message"));
+
+                        loginListener.loggedInFailure(loginFailure.getString("message"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+
     }
 
-    public static void register(String email, String password, String firstName, String lastName, RegisterListener registerListener) throws  Exception{
-        JSONObject registerObject = new JSONObject();
-        try{
-            registerObject.put("email", email);
-            registerObject.put("password", password);
-        } catch(JSONException jse) {
-            jse.printStackTrace();
-        }
-
-        final MediaType MEDIA_TYPE_JSON
-                = MediaType.parse("application/json; charset=utf-8");
-
-        String postBody = registerObject.toString();
+    public static void register(String email, String password, String firstName, String lastName, RegisterListener registerListener) {
+        FormBody formBody = new FormBody.Builder()
+                .add("email", email)
+                .add("password", password)
+                .add("firstName", firstName)
+                .add("lastName", lastName)
+                .build();
 
         Request request = new Request.Builder()
                 .url("https://node-authenticator-uncc.herokuapp.com/api/auth/signup")
-                .post(RequestBody.create(postBody, MEDIA_TYPE_JSON))
+                .post(formBody)
                 .build();
 
-        try (Response response = client.newCall(request).execute()) {
-            if (!response.isSuccessful()) {
-                registerListener.registeredFailure(response.message());
-                throw new IOException("Unexpected code " + response);
-            } else {
-                registerListener.registered();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                e.printStackTrace();
             }
 
-            System.out.println(response.body().string());
-        }
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                if(response.isSuccessful()) {
+                    JSONObject jsonMessage = null;
+                    try {
+                        jsonMessage = new JSONObject(response.body().string());
+                        Log.d(TAG, jsonMessage.getString("message"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    registerListener.registered();
+                } else {
+                    JSONObject jsonErrorMessage = null;
+                    try {
+                        jsonErrorMessage = new JSONObject(response.body().string());
+                        Log.d(TAG, jsonErrorMessage.getString("message"));
+                        registerListener.registeredFailure(jsonErrorMessage.getString("message"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }
+        });
+
     }
 
     public static void getProfile() {
-        
+        //TODO add OkayHttp GET call when API is implemented
     }
 }
