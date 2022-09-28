@@ -66,7 +66,11 @@ public class LoginFragment extends Fragment implements LoginListener {
         String password = binding.editTextLoginPassword.getText().toString();
 
         if(!email.isEmpty() && !password.isEmpty()) {
-            DataSingleton.login(email, password, this);
+            try {
+                DataSingleton.login(email, password, this);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         } else {
             builder.setMessage("Please fill out all required fields");
             AlertDialog alertDialog = builder.create();

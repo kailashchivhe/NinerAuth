@@ -72,7 +72,11 @@ public class RegisterFragment extends Fragment implements RegisterListener {
         String password = binding.editTextRegisterPassword.getText().toString();
 
         if(!email.isEmpty() && !password.isEmpty() && !firstName.isEmpty() && !lastName.isEmpty()) {
-            DataSingleton.register(email, password, firstName, lastName, this);
+            try {
+                DataSingleton.register(email, password, firstName, lastName, this);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         } else {
             builder.setMessage("Please fill out all required fields");
             AlertDialog alertDialog = builder.create();
