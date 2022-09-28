@@ -2,12 +2,15 @@ package com.kai.ninerauth.util;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
+import android.provider.ContactsContract;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 
 import com.kai.ninerauth.ui.login.LoginListener;
+import com.kai.ninerauth.ui.profile.ProfileListener;
 import com.kai.ninerauth.ui.register.RegisterListener;
 
 import org.json.JSONException;
@@ -18,10 +21,8 @@ import java.io.IOException;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
-import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class DataSingleton {
@@ -63,6 +64,7 @@ public class DataSingleton {
                         JSONObject res = new JSONObject(response.body().string());
                         String status = res.getString("status");
                         JSONObject user = res.getJSONObject("data");
+
                         Log.d(TAG, "onResponse: login status " + status);
                         Log.d(TAG, "user is: " + user);
                     } catch (JSONException e) {
@@ -132,7 +134,8 @@ public class DataSingleton {
 
     }
 
-    public static void getProfile() {
+    public static void getProfile(String uid, ProfileListener profileListener) {
         //TODO add OkayHttp GET call when API is implemented
+
     }
 }

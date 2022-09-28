@@ -1,5 +1,7 @@
 package com.kai.ninerauth.ui.profile;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -22,6 +24,7 @@ import com.kai.ninerauth.databinding.FragmentProfileBinding;
 public class ProfileFragment extends Fragment implements ProfileListener{
 
     private FragmentProfileBinding binding;
+    AlertDialog.Builder builder;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -72,23 +75,46 @@ public class ProfileFragment extends Fragment implements ProfileListener{
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Alert");
+        builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
 
         binding.buttonUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //update profile information
+                onUpdateClicked();
             }
         });
 
         binding.buttonLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                NavHostFragment.findNavController(ProfileFragment.this)
-                        .navigate(R.id.action_ProfileFragment_to_FirstFragment);
+                onLogoutClicked();
             }
         });
+    }
+
+    void onLogoutClicked() {
+        //TODO: logout user and delete jwt token
+        NavHostFragment.findNavController(ProfileFragment.this)
+                .navigate(R.id.action_ProfileFragment_to_FirstFragment);
+    }
+
+    void onUpdateClicked() {
+        //TODO: update profile
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 
     @Override
@@ -98,6 +124,8 @@ public class ProfileFragment extends Fragment implements ProfileListener{
 
     @Override
     public void profileUpdateFailed(String message) {
-
+        builder.setMessage(message);
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 }
