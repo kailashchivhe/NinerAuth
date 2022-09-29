@@ -64,11 +64,12 @@ public class DataSingleton {
                         JSONObject res = new JSONObject(response.body().string());
                         String status = res.getString("status");
                         JSONObject user = res.getJSONObject("data");
+                        String userEmail = user.getString("email");
                         String jwtToken = user.getString("token");
                         Log.d(TAG, "onResponse: login status " + status);
                         Log.d(TAG, "user is: " + user);
 
-                        loginListener.loggedIn(jwtToken);
+                        loginListener.loggedIn(email, jwtToken);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

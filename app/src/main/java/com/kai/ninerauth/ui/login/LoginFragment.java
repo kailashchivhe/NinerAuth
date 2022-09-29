@@ -94,10 +94,11 @@ public class LoginFragment extends Fragment implements LoginListener {
     }
 
     @Override
-    public void loggedIn(String jwtToken) {
+    public void loggedIn(String email, String jwtToken) {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                spEditor.putString("email", email);
                 spEditor.putString("token", jwtToken);
                 spEditor.apply();
                 NavHostFragment.findNavController(LoginFragment.this)

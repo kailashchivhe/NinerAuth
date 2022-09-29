@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -95,7 +96,8 @@ public class RegisterFragment extends Fragment implements RegisterListener {
             @Override
             public void run() {
                 NavHostFragment.findNavController(RegisterFragment.this)
-                        .navigate(R.id.action_SecondFragment_to_ProfileFragment);
+                        .navigate(R.id.action_SecondFragment_to_FirstFragment);
+                Toast.makeText(getActivity(), "New user registered!", Toast.LENGTH_SHORT).show();
             }
         });
 
