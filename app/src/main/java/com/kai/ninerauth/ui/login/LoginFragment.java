@@ -1,7 +1,9 @@
 package com.kai.ninerauth.ui.login;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.view.LayoutInflater;
@@ -22,6 +24,8 @@ public class LoginFragment extends Fragment implements LoginListener {
 
     private FragmentFirstBinding binding;
     AlertDialog.Builder builder;
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor spEditor;
 
     @Override
     public View onCreateView(
@@ -45,6 +49,10 @@ public class LoginFragment extends Fragment implements LoginListener {
 
             }
         });
+
+        sharedPreferences = getActivity().getSharedPreferences("appPreferences", Context.MODE_PRIVATE);
+        String userToken = sharedPreferences.getString("token", "");
+        spEditor = sharedPreferences.edit();
 
         binding.buttonFirst.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,10 +94,12 @@ public class LoginFragment extends Fragment implements LoginListener {
     }
 
     @Override
-    public void loggedIn() {
+    public void loggedIn(String jwtToken) {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                spEditor.putString("token", jwtToken);
+                spEditor.apply();
                 NavHostFragment.findNavController(LoginFragment.this)
                         .navigate(R.id.action_FirstFragment_to_ProfileFragment);
             }

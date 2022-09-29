@@ -3,6 +3,7 @@ package com.kai.ninerauth.ui.register;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +22,8 @@ public class RegisterFragment extends Fragment implements RegisterListener {
 
     private FragmentSecondBinding binding;
     AlertDialog.Builder builder;
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor spEditor;
 
     @Override
     public View onCreateView(

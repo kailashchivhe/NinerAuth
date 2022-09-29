@@ -2,6 +2,7 @@ package com.kai.ninerauth.ui.profile;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -25,6 +26,8 @@ public class ProfileFragment extends Fragment implements ProfileListener{
 
     private FragmentProfileBinding binding;
     AlertDialog.Builder builder;
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor spEditor;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
