@@ -3,32 +3,32 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/FirstFragment">
+    app:startDestination="@id/LoginFragment">
 
     <fragment
-        android:id="@+id/FirstFragment"
+        android:id="@+id/LoginFragment"
         android:name="com.kai.ninerauth.ui.login.LoginFragment"
-        android:label="@string/first_fragment_label"
-        tools:layout="@layout/fragment_first">
+        android:label="@string/login_fragment_label"
+        tools:layout="@layout/fragment_login">
 
         <action
-            android:id="@+id/action_FirstFragment_to_SecondFragment"
-            app:destination="@id/SecondFragment" />
+            android:id="@+id/action_LoginFragment_to_RegisterFragment"
+            app:destination="@id/RegisterFragment" />
         <action
-            android:id="@+id/action_FirstFragment_to_ProfileFragment"
+            android:id="@+id/action_LoginFragment_to_ProfileFragment"
             app:destination="@id/ProfileFragment" />
     </fragment>
     <fragment
-        android:id="@+id/SecondFragment"
+        android:id="@+id/RegisterFragment"
         android:name="com.kai.ninerauth.ui.register.RegisterFragment"
-        android:label="@string/second_fragment_label"
-        tools:layout="@layout/fragment_second">
+        android:label="@string/register_fragment_label"
+        tools:layout="@layout/fragment_register">
 
         <action
-            android:id="@+id/action_SecondFragment_to_FirstFragment"
-            app:destination="@id/FirstFragment" />
+            android:id="@+id/action_RegisterFragment_to_LoginFragment"
+            app:destination="@id/LoginFragment" />
         <action
-            android:id="@+id/action_SecondFragment_to_ProfileFragment"
+            android:id="@+id/action_RegisterFragment_to_ProfileFragment"
             app:destination="@id/ProfileFragment" />
     </fragment>
     <fragment
@@ -38,7 +38,7 @@
         tools:layout="@layout/fragment_profile">
 
         <action
-            android:id="@+id/action_ProfileFragment_to_FirstFragment"
-            app:destination="@id/FirstFragment" />
+            android:id="@+id/action_ProfileFragment_to_LoginFragment"
+            app:destination="@id/LoginFragment" />
     </fragment>
 </navigation>

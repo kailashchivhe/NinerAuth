@@ -5,42 +5,80 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
+import com.kai.ninerauth.Model.LoginData;
 import com.kai.ninerauth.R;
-import com.kai.ninerauth.databinding.FragmentFirstBinding;
-import com.kai.ninerauth.ui.register.RegisterFragment;
-import com.kai.ninerauth.util.DataSingleton;
 
-public class LoginFragment extends Fragment implements LoginListener {
+import com.kai.ninerauth.databinding.FragmentLoginBinding;
 
-    private FragmentFirstBinding binding;
+public class LoginFragment extends Fragment {
+
+    private FragmentLoginBinding binding;
     AlertDialog.Builder builder;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor spEditor;
+    LoginViewModel loginViewModel;
 
     @Override
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState
-    ) {
-
-        binding = FragmentFirstBinding.inflate(inflater, container, false);
+            Bundle savedInstanceState)
+    {
+        binding = FragmentLoginBinding.inflate(inflater, container, false);
         return binding.getRoot();
+    }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        loginViewModel = new ViewModelProvider(this).get(LoginViewModel.class);
+
+        loginViewModel.getLoginLiveData().observe(getViewLifecycleOwner(), new Observer<LoginData>() {
+            @Override
+            public void onChanged(LoginData loginData) {
+                if(loginData !=null){
+                    spEditor.putString("email", loginData.getEmail());
+                    spEditor.putString("token", loginData.getJwtToken());
+                    spEditor.apply();
+                    navigateToProfile();
+                }
+            }
+        });
+
+        loginViewModel.getMessageLiveData().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                if(!s.isEmpty()){
+                    displayMessageToast(s);
+                }
+            }
+        });
+    }
+
+    private void displayMessageToast(String s) {
+        Toast.makeText(getContext(), s, Toast.LENGTH_LONG).show();
+    }
+
+    private void navigateToProfile() {
+        Toast.makeText(getContext(), "User Logged In", Toast.LENGTH_LONG).show();
+        NavHostFragment.findNavController(this).navigate(R.id.action_LoginFragment_to_ProfileFragment);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
         builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Alert");
         builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
@@ -54,14 +92,14 @@ public class LoginFragment extends Fragment implements LoginListener {
         String userToken = sharedPreferences.getString("token", "");
         spEditor = sharedPreferences.edit();
 
-        binding.buttonFirst.setOnClickListener(new View.OnClickListener() {
+        binding.buttonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onLoginButtonClicked();
             }
         });
 
-        binding.buttonRegistration.setOnClickListener(new View.OnClickListener() {
+        binding.buttonLoginRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onRegistrationButtonClicked();
@@ -74,7 +112,7 @@ public class LoginFragment extends Fragment implements LoginListener {
         String password = binding.editTextLoginPassword.getText().toString();
 
         if(!email.isEmpty() && !password.isEmpty()) {
-            DataSingleton.login(email, password, this);
+            loginViewModel.login(email,password);
         } else {
             builder.setMessage("Please fill out all required fields");
             AlertDialog alertDialog = builder.create();
@@ -84,34 +122,12 @@ public class LoginFragment extends Fragment implements LoginListener {
 
     void onRegistrationButtonClicked() {
         NavHostFragment.findNavController(LoginFragment.this)
-                .navigate(R.id.action_FirstFragment_to_SecondFragment);
+                .navigate(R.id.action_LoginFragment_to_RegisterFragment);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
-    }
-
-    @Override
-    public void loggedIn(String email, String jwtToken) {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                spEditor.putString("email", email);
-                spEditor.putString("token", jwtToken);
-                spEditor.apply();
-                NavHostFragment.findNavController(LoginFragment.this)
-                        .navigate(R.id.action_FirstFragment_to_ProfileFragment);
-            }
-        });
-
-    }
-
-    @Override
-    public void loggedInFailure(String message) {
-        builder.setMessage(message);
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
     }
 }

@@ -1,17 +1,11 @@
 package com.kai.ninerauth.util;
 
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.SharedPreferences;
-import android.provider.ContactsContract;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 
-import com.kai.ninerauth.ui.login.LoginListener;
-import com.kai.ninerauth.ui.profile.ProfileListener;
-import com.kai.ninerauth.ui.register.RegisterListener;
+import com.kai.ninerauth.listener.LoginListener;
+import com.kai.ninerauth.listener.RegisterationListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,19 +19,11 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class DataSingleton {
-    private static DataSingleton instance;
+public class APIHelper {
     private static final OkHttpClient client = new OkHttpClient();
-    private static final String TAG = "DataSingleton";
+    private static final String TAG = "APIHelper";
 
-    public static DataSingleton getInstance(){
-        if( instance == null ){
-            instance = new DataSingleton();
-        }
-        return instance;
-    }
-
-    public DataSingleton() {
+    public APIHelper() {
     }
 
     public static void login(String email, String password, LoginListener loginListener) {
@@ -62,23 +48,18 @@ public class DataSingleton {
                 if(response.isSuccessful()){
                     try {
                         JSONObject res = new JSONObject(response.body().string());
-                        String status = res.getString("status");
                         JSONObject user = res.getJSONObject("data");
                         String userEmail = user.getString("email");
-                        String jwtToken = user.getString("token");
-                        Log.d(TAG, "onResponse: login status " + status);
-                        Log.d(TAG, "user is: " + user);
+                        String jwtToken = user.getString("accessToken");
 
-                        loginListener.loggedIn(email, jwtToken);
+                        loginListener.loginSuccessfull(userEmail, jwtToken);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 } else {
                     try {
                         JSONObject loginFailure = new JSONObject(response.body().toString());
-                        Log.d(TAG, loginFailure.getString("message"));
-
-                        loginListener.loggedInFailure(loginFailure.getString("message"));
+                        loginListener.loginFailure(loginFailure.getString("message"));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -88,7 +69,7 @@ public class DataSingleton {
 
     }
 
-    public static void register(String email, String password, String firstName, String lastName, RegisterListener registerListener) {
+    public static void register(String email, String password, String firstName, String lastName, RegisterationListener registerationListener) {
         FormBody formBody = new FormBody.Builder()
                 .add("email", email)
                 .add("password", password)
@@ -113,18 +94,15 @@ public class DataSingleton {
                     JSONObject jsonMessage = null;
                     try {
                         jsonMessage = new JSONObject(response.body().string());
-                        Log.d(TAG, jsonMessage.getString("message"));
+                        registerationListener.registerationSuccessful();
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-
-                    registerListener.registered();
                 } else {
                     JSONObject jsonErrorMessage = null;
                     try {
                         jsonErrorMessage = new JSONObject(response.body().string());
-                        Log.d(TAG, jsonErrorMessage.getString("message"));
-                        registerListener.registeredFailure(jsonErrorMessage.getString("message"));
+                        registerationListener.registerationFailure(jsonErrorMessage.getString("message"));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -132,11 +110,6 @@ public class DataSingleton {
                 }
             }
         });
-
-    }
-
-    public static void getProfile(String uid, ProfileListener profileListener) {
-        //TODO add OkayHttp GET call when API is implemented
 
     }
 }
