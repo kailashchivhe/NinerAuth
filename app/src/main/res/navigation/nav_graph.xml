@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/LoginFragment"
-        android:name="com.kai.ninerauth.ui.login.LoginFragment"
+        android:name="com.kai.shoppingcart.ui.login.LoginFragment"
         android:label="@string/login_fragment_label"
         tools:layout="@layout/fragment_login">
 
@@ -15,30 +15,53 @@
             android:id="@+id/action_LoginFragment_to_RegisterFragment"
             app:destination="@id/RegisterFragment" />
         <action
-            android:id="@+id/action_LoginFragment_to_ProfileFragment"
-            app:destination="@id/ProfileFragment" />
+            android:id="@+id/action_LoginFragment_to_HomeFragment"
+            app:destination="@id/HomeFragment" />
     </fragment>
     <fragment
         android:id="@+id/RegisterFragment"
-        android:name="com.kai.ninerauth.ui.register.RegisterFragment"
+        android:name="com.kai.shoppingcart.ui.register.RegisterFragment"
         android:label="@string/register_fragment_label"
         tools:layout="@layout/fragment_register">
 
         <action
             android:id="@+id/action_RegisterFragment_to_LoginFragment"
             app:destination="@id/LoginFragment" />
-        <action
-            android:id="@+id/action_RegisterFragment_to_ProfileFragment"
-            app:destination="@id/ProfileFragment" />
     </fragment>
     <fragment
         android:id="@+id/ProfileFragment"
-        android:name="com.kai.ninerauth.ui.profile.ProfileFragment"
+        android:name="com.kai.shoppingcart.ui.profile.ProfileFragment"
         android:label="@string/profile_fragment_label"
         tools:layout="@layout/fragment_profile">
 
         <action
-            android:id="@+id/action_ProfileFragment_to_LoginFragment"
+            android:id="@+id/action_ProfileFragment_to_HomeFragment"
+            app:destination="@id/HomeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/HomeFragment"
+        android:name="com.kai.shoppingcart.ui.home.HomeFragment"
+        android:label="@string/home_fragment_label"
+        tools:layout="@layout/fragment_home">
+
+        <action
+            android:id="@+id/action_HomeFragment_to_LoginFragment"
             app:destination="@id/LoginFragment" />
+        <action
+            android:id="@+id/action_HomeFragment_to_CartFragment"
+            app:destination="@id/CartFragment" />
+        <action
+            android:id="@+id/action_HomeFragment_to_ProfileFragment"
+            app:destination="@id/ProfileFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/CartFragment"
+        android:name="com.kai.shoppingcart.ui.cart.CartFragment"
+        android:label="@string/cart_fragment_label"
+        tools:layout="@layout/fragment_cart">
+
+        <action
+            android:id="@+id/action_CartFragment_to_HomeFragment"
+            app:destination="@id/HomeFragment" />
     </fragment>
 </navigation>

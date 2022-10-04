@@ -1,10 +1,12 @@
 <resources>
-    <string name="app_name">NinerAuth</string>
+    <string name="app_name">Shopping Cart</string>
     <string name="action_settings">Settings</string>
     <!-- Strings used for fragments for navigation -->
     <string name="login_fragment_label">Login Fragment</string>
     <string name="register_fragment_label">Registration Fragment</string>
     <string name="profile_fragment_label">Profile Fragment</string>
+    <string name="home_fragment_label">Home Fragment</string>
+    <string name="cart_fragment_label">Cart Fragment</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
 
@@ -16,6 +18,7 @@
     <string name="login_button">Login</string>
     <string name="registration_button">Register</string>
     <string name="update_button">Update Profile</string>
-    <string name="logout_button">Logout</string>
+    <string name="action_logout">Logout</string>
+    <string name="action_profile">Profile</string>
 
 </resources>
