@@ -49,7 +49,7 @@ public class LoginFragment extends Fragment {
             public void onChanged(LoginData loginData) {
                 if(loginData !=null){
                     spEditor.putString("email", loginData.getEmail());
-                    spEditor.putString("token", loginData.getJwtToken());
+                    spEditor.putString("jwtToken", loginData.getJwtToken());
                     spEditor.apply();
                     navigateToProfile();
                 }
@@ -89,8 +89,11 @@ public class LoginFragment extends Fragment {
         });
 
         sharedPreferences = getActivity().getSharedPreferences("appPreferences", Context.MODE_PRIVATE);
-        String userToken = sharedPreferences.getString("token", "");
+        String userToken = sharedPreferences.getString("jwtToken", "");
         spEditor = sharedPreferences.edit();
+        if(userToken.length() != 0){
+            navigateToProfile();
+        }
 
         binding.buttonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
