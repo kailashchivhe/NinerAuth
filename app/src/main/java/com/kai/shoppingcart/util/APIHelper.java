@@ -50,11 +50,10 @@ public class APIHelper {
                 if(response.isSuccessful()){
                     try {
                         JSONObject res = new JSONObject(response.body().string());
-                        JSONObject user = res.getJSONObject("data");
-                        String userEmail = user.getString("email");
-                        String jwtToken = user.getString("accessToken");
+                        String id = res.getString("id");
+                        String jwtToken = res.getString("token");
 
-                        loginListener.loginSuccessfull(userEmail, jwtToken);
+                        loginListener.loginSuccessfull(id, jwtToken);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -75,8 +74,8 @@ public class APIHelper {
         FormBody formBody = new FormBody.Builder()
                 .add("email", email)
                 .add("password", password)
-                .add("first_name", firstName)
-                .add("last_name", lastName)
+                .add("firstName", firstName)
+                .add("lastName", lastName)
                 .build();
 
         Request request = new Request.Builder()
@@ -115,13 +114,13 @@ public class APIHelper {
 
     }
 
-    public static void profileRetrival(String email, String jwtToken, ProfileRetrivalListener profileRetrivalListener){
+    public static void profileRetrival(String id, String jwtToken, ProfileRetrivalListener profileRetrivalListener){
 
 
         HttpUrl url = HttpUrl.parse("https://node-authenticator-uncc.herokuapp.com/api/auth/profile").newBuilder()
                 .addQueryParameter("token",jwtToken)
+                .addQueryParameter("userId",id)
                 .build();
-        url = HttpUrl.parse(url + "&email=" + email);
         Request request = new Request.Builder()
                 .url(url)
                 .build();
@@ -139,9 +138,8 @@ public class APIHelper {
                         JSONObject res = new JSONObject(response.body().string());
                         JSONObject user = res.getJSONObject("data");
                         String email = user.getString("email");
-                        String firstname = user.getString("first_name");
-                        String lastname = user.getString("last_name");
-
+                        String firstname = user.getString("firstName");
+                        String lastname = user.getString("lastName");
 
                         profileRetrivalListener.profileRetrivalSuccessful(new User(firstname,lastname,email));
                     } catch (JSONException e) {
@@ -159,6 +157,42 @@ public class APIHelper {
         });
     }
     public static void profileUpdate(User user, ProfileUpdateListener profileUpdateListener){
+
+        FormBody formBody = new FormBody.Builder()
+                .add("id", user.getId())
+                .add("firstName", user.getFirstName())
+                .add("lastName", user.getLastName())
+                .build();
+
+        HttpUrl url = HttpUrl.parse("https://node-authenticator-uncc.herokuapp.com/api/auth/profile").newBuilder()
+                .addQueryParameter("token",user.getJwtToken())
+                .build();
+
+        Request request = new Request.Builder()
+                .url(url)
+                .post(formBody)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                if(response.isSuccessful()){
+                    profileUpdateListener.profileUpdateSuccessful();
+                } else {
+                    try {
+                        JSONObject updateFailure = new JSONObject(response.body().toString());
+                        profileUpdateListener.profileUpdateFailure(updateFailure.getString("message"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
 
     }
 }

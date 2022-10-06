@@ -1,15 +1,15 @@
 package com.kai.shoppingcart.model;
 
 public class LoginData {
-    String email;
+    String id;
     String jwtToken;
 
-    public String getEmail() {
-        return email;
+    public String getId() {
+        return id;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getJwtToken() {
@@ -20,8 +20,8 @@ public class LoginData {
         this.jwtToken = jwtToken;
     }
 
-    public LoginData(String email, String jwtToken) {
-        this.email = email;
+    public LoginData(String id, String jwtToken) {
+        this.id = id;
         this.jwtToken = jwtToken;
     }
 }

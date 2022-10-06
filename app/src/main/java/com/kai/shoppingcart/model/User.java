@@ -4,14 +4,13 @@ public class User {
     String firstName;
     String lastName;
     String email;
-    String password;
+    String id;
     String jwtToken;
 
-    public User(String firstName, String lastName, String email, String password, String jwtToken) {
+    public User(String firstName, String lastName, String id, String jwtToken) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.email = email;
-        this.password = password;
+        this.id = id;
         this.jwtToken = jwtToken;
     }
 
@@ -45,12 +44,12 @@ public class User {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
+    public String getId() {
+        return id;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getJwtToken() {

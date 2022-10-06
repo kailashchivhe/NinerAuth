@@ -15,10 +15,12 @@ public class ProfileViewModel extends AndroidViewModel implements ProfileRetriva
 
     MutableLiveData<String> messageLiveData;
     MutableLiveData<User> profileLiveData;
+    MutableLiveData<Boolean> profileUpdateLiveData;
     public ProfileViewModel(@NonNull Application application) {
         super(application);
         messageLiveData = new MutableLiveData<>();
         profileLiveData = new MutableLiveData<>();
+        profileUpdateLiveData = new MutableLiveData<>();
     }
 
     public void profileRetrival(String email, String jwtToken){
@@ -30,6 +32,14 @@ public class ProfileViewModel extends AndroidViewModel implements ProfileRetriva
 
     public MutableLiveData<User> getProfileLiveData(){
         return profileLiveData;
+    }
+
+    public MutableLiveData<Boolean> getProfileUpdateLiveData(){
+        return profileUpdateLiveData;
+    }
+
+    public MutableLiveData<String> getMessageLiveData(){
+        return messageLiveData;
     }
     @Override
     public void profileRetrivalSuccessful(User user) {
@@ -43,7 +53,7 @@ public class ProfileViewModel extends AndroidViewModel implements ProfileRetriva
 
     @Override
     public void profileUpdateSuccessful() {
-
+        profileUpdateLiveData.postValue(true);
     }
 
     @Override

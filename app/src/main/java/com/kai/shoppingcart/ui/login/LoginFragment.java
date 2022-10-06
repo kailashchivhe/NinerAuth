@@ -51,7 +51,7 @@ public class LoginFragment extends Fragment {
             @Override
             public void onChanged(LoginData loginData) {
                 if(loginData !=null){
-                    spEditor.putString("email", loginData.getEmail());
+                    spEditor.putString("id", loginData.getId());
                     spEditor.putString("jwtToken", loginData.getJwtToken());
                     spEditor.apply();
                     navigateToHome();
@@ -93,9 +93,9 @@ public class LoginFragment extends Fragment {
 
         sharedPreferences = getActivity().getSharedPreferences("appPreferences", Context.MODE_PRIVATE);
         String jwtToken = sharedPreferences.getString("jwtToken", "");
-        String email = sharedPreferences.getString("email", "");
+        String id = sharedPreferences.getString("id", "");
         spEditor = sharedPreferences.edit();
-        if(jwtToken.length() != 0 && email.length() != 0){
+        if(jwtToken.length() != 0 && id.length() != 0){
             navigateToHome();
         }
 

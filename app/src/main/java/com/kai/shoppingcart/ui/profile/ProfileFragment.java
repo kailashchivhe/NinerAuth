@@ -16,6 +16,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.kai.shoppingcart.R;
 import com.kai.shoppingcart.databinding.FragmentProfileBinding;
@@ -31,7 +32,7 @@ public class ProfileFragment extends Fragment {
     SharedPreferences.Editor spEditor;
     ProfileViewModel profileViewModel;
     String jwtToken;
-    String email;
+    String id;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -56,13 +57,29 @@ public class ProfileFragment extends Fragment {
                 }
             }
         });
+        profileViewModel.getProfileUpdateLiveData().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if(aBoolean){
+                    Toast.makeText(getContext(), "Profile Updated", Toast.LENGTH_LONG).show();
+                    onCancelClicked();
+                }
+            }
+        });
+        profileViewModel.getMessageLiveData().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                if(!s.isEmpty()){
+                    Toast.makeText(getContext(), s, Toast.LENGTH_LONG).show();
+                }
+            }
+        });
     }
 
     private void setProfileDetails(User user) {
         binding.editTextProfileFirstName.setText(user.getFirstName());
         binding.editTextProfileLastName.setText(user.getLastName());
         binding.editTextTextProfieEmail.setText(user.getEmail());
-        binding.editTextProfilePassword.setText(user.getPassword());
     }
 
     @Override
@@ -86,8 +103,8 @@ public class ProfileFragment extends Fragment {
         });
         sharedPreferences = getActivity().getSharedPreferences("appPreferences", Context.MODE_PRIVATE);
         jwtToken = sharedPreferences.getString("jwtToken", "");
-        email = sharedPreferences.getString("email", "");
-        profileViewModel.profileRetrival(email,jwtToken);
+        id = sharedPreferences.getString("id", "");
+        profileViewModel.profileRetrival(id,jwtToken);
 
 
         binding.buttonProfileUpdate.setOnClickListener(new View.OnClickListener() {
@@ -114,9 +131,7 @@ public class ProfileFragment extends Fragment {
         //TODO: update profile
         String firstName = binding.editTextProfileFirstName.getText().toString();
         String lastName = binding.editTextProfileLastName.getText().toString();
-        String email = binding.editTextTextProfieEmail.getText().toString();
-        String password = binding.editTextProfilePassword.getText().toString();
-        User user = new User(firstName,lastName,email,password,jwtToken);
+        User user = new User(firstName,lastName,id,jwtToken);
         profileViewModel.profileUpdate(user);
     }
 }
