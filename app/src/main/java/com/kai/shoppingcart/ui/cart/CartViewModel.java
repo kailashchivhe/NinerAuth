@@ -29,8 +29,8 @@ public class CartViewModel extends AndroidViewModel implements TokenGetListener,
         APIHelper.getToken(jwtToken, customerId, this);
     }
 
-    public void transaction(String token, String nonceFromTheClient, String deviceDataFromTheClient, String amount){
-        APIHelper.transaction(token,nonceFromTheClient,deviceDataFromTheClient,amount,this);
+    public void transaction(String token, String nonceFromTheClient, String amount){
+        APIHelper.transaction(token,nonceFromTheClient,amount,this);
     }
     public MutableLiveData<String> getMessageMutableLiveData(){
         return messageMutableLiveData;
