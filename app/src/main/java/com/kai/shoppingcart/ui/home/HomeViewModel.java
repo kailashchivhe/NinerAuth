@@ -4,11 +4,43 @@ import android.app.Application;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class HomeViewModel extends AndroidViewModel {
+import com.kai.shoppingcart.listener.ItemRetrivalListener;
+import com.kai.shoppingcart.model.Item;
+import com.kai.shoppingcart.util.APIHelper;
+
+import java.util.List;
+
+public class HomeViewModel extends AndroidViewModel implements ItemRetrivalListener {
+
+    MutableLiveData<List<Item>> itemListMutableLiveData;
+    MutableLiveData<String> messageMutableLiveData;
     public HomeViewModel(@NonNull Application application) {
         super(application);
+        itemListMutableLiveData = new MutableLiveData<>();
+        messageMutableLiveData = new MutableLiveData<>();
     }
-    // TODO: Implement the ViewModel
+
+    void getItems(String jwtToken){
+        APIHelper.itemRetrival(jwtToken,this);
+    }
+
+    MutableLiveData<String> getMessageMutableLiveData(){
+        return messageMutableLiveData;
+    }
+
+    MutableLiveData<List<Item>> getItemsMutableLiveData(){
+        return itemListMutableLiveData;
+    }
+    @Override
+    public void itemRetrivalSuccessful(List<Item> itemList) {
+        itemListMutableLiveData.postValue(itemList);
+    }
+
+    @Override
+    public void itemRetrivalFailure(String message) {
+        messageMutableLiveData.postValue(message);
+    }
 }

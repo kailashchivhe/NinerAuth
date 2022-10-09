@@ -53,6 +53,7 @@ public class LoginFragment extends Fragment {
                 if(loginData !=null){
                     spEditor.putString("id", loginData.getId());
                     spEditor.putString("jwtToken", loginData.getJwtToken());
+                    spEditor.putString("customerId", loginData.getCustomerId());
                     spEditor.apply();
                     navigateToHome();
                 }
@@ -94,8 +95,10 @@ public class LoginFragment extends Fragment {
         sharedPreferences = getActivity().getSharedPreferences("appPreferences", Context.MODE_PRIVATE);
         String jwtToken = sharedPreferences.getString("jwtToken", "");
         String id = sharedPreferences.getString("id", "");
+        String customerId = sharedPreferences.getString("customerId", "");
         spEditor = sharedPreferences.edit();
-        if(jwtToken.length() != 0 && id.length() != 0){
+
+        if(jwtToken.length() != 0 && id.length() != 0 && customerId.length() != 0){
             navigateToHome();
         }
 

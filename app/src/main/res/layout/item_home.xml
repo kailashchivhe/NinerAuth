@@ -23,7 +23,9 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
         android:text="TextView"
+        android:textAlignment="center"
         android:textSize="20sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imageViewItem"
         app:layout_constraintTop_toTopOf="parent" />
@@ -36,6 +38,9 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
         android:text="TextView"
+        android:textAlignment="center"
+        android:textColor="#E53935"
+        android:textStyle="italic"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.635"
         app:layout_constraintStart_toEndOf="@+id/imageViewItem"
@@ -49,45 +54,70 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
         android:text="TextView"
+        android:textAlignment="center"
+        android:textColor="#29CD30"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/imageViewItem"
-        app:layout_constraintTop_toBottomOf="@+id/textViewPrice" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingActionButtonPlus"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="50dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginBottom="24dp"
-        android:clickable="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageViewItem"
-        app:srcCompat="@android:drawable/btn_plus" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewDiscount" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floatingActionButtonMinus"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="50dp"
+        android:layout_width="37dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="168dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="32dp"
         android:clickable="true"
-        app:layout_constraintBottom_toBottomOf="@+id/floatingActionButtonPlus"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewFinalPrice"
+        app:srcCompat="@android:drawable/btn_plus" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingActionButtonPlus"
+        android:layout_width="25dp"
+        android:layout_height="27dp"
+        android:layout_marginEnd="92dp"
+        android:clickable="true"
+        app:layout_constraintBottom_toBottomOf="@+id/floatingActionButtonMinus"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageViewItem"
+        app:layout_constraintTop_toTopOf="@+id/textViewQuantity"
         app:srcCompat="@android:drawable/btn_minus" />
 
     <TextView
         android:id="@+id/textViewQuantity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="TextView"
+        android:textAlignment="center"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toStartOf="@+id/floatingActionButtonPlus"
+        app:layout_constraintHorizontal_bias="0.55"
+        app:layout_constraintStart_toEndOf="@+id/floatingActionButtonMinus"
+        app:layout_constraintTop_toTopOf="@+id/floatingActionButtonMinus" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="top"
+        tools:layout_editor_absoluteX="163dp"
+        tools:layout_editor_absoluteY="277dp" />
+
+    <TextView
+        android:id="@+id/textViewDiscount"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
         android:text="TextView"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toStartOf="@+id/floatingActionButtonMinus"
-        app:layout_constraintStart_toEndOf="@+id/floatingActionButtonPlus"
-        app:layout_constraintTop_toTopOf="@+id/floatingActionButtonMinus" />
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imageViewItem"
+        app:layout_constraintTop_toBottomOf="@+id/textViewPrice" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

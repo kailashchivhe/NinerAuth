@@ -32,8 +32,8 @@ public class LoginViewModel extends AndroidViewModel implements LoginListener {
     }
 
     @Override
-    public void loginSuccessfull(String id, String jwtToken) {
-        loginLiveData.postValue(new LoginData(id,jwtToken));
+    public void loginSuccessfull(String id, String jwtToken, String customerId) {
+        loginLiveData.postValue(new LoginData(id,jwtToken, customerId));
     }
 
     @Override

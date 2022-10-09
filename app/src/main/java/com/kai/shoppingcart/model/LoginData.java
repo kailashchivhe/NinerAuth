@@ -3,6 +3,21 @@ package com.kai.shoppingcart.model;
 public class LoginData {
     String id;
     String jwtToken;
+    String customerId;
+
+    public String getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(String customerId) {
+        this.customerId = customerId;
+    }
+
+    public LoginData(String id, String jwtToken, String customerId) {
+        this.id = id;
+        this.jwtToken = jwtToken;
+        this.customerId = customerId;
+    }
 
     public String getId() {
         return id;
@@ -17,11 +32,6 @@ public class LoginData {
     }
 
     public void setJwtToken(String jwtToken) {
-        this.jwtToken = jwtToken;
-    }
-
-    public LoginData(String id, String jwtToken) {
-        this.id = id;
         this.jwtToken = jwtToken;
     }
 }
