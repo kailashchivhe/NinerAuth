@@ -289,11 +289,10 @@ public class APIHelper {
         });
     }
 
-    public static void transaction(String token, String nonceFromTheClient, String deviceDataFromTheClient, String amount, TransactionListener transactionListener){
+    public static void transaction(String token, String nonceFromTheClient, String amount, TransactionListener transactionListener){
         FormBody formBody = new FormBody.Builder()
                 .add("amount", amount)
                 .add("nonceFromTheClient", nonceFromTheClient)
-                .add("deviceDataFromTheClient", deviceDataFromTheClient)
                 .build();
 
         HttpUrl url = HttpUrl.parse("https://node-authenticator-uncc.herokuapp.com/api/auth/transaction").newBuilder()
