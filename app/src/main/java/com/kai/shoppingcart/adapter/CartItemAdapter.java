@@ -55,18 +55,6 @@ public class CartItemAdapter extends RecyclerView.Adapter<CartItemHolder>{
         catch (Exception e){
             Log.d(TAG, "onBindViewHolder: " + e.getMessage());
         }
-
-
-        holder.buttonCartRemove.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                list.remove(holder.getAdapterPosition());
-                notifyItemRemoved(holder.getAdapterPosition());
-                notifyItemRangeChanged(holder.getAdapterPosition(), list.size());
-                holder.itemView.setVisibility(View.GONE);
-                Log.d("Vidit", "onClick: Size: " + list.size());
-            }
-        });
     }
 
     @Override
@@ -82,7 +70,6 @@ class CartItemHolder extends RecyclerView.ViewHolder{
     TextView textViewCartFinalPrice;
     TextView textViewCartQuantity;
     ImageView imageViewCartItem;
-    Button buttonCartRemove;
 
     public CartItemHolder(@NonNull View itemView) {
         super(itemView);
@@ -91,6 +78,6 @@ class CartItemHolder extends RecyclerView.ViewHolder{
         textViewCartName = itemView.findViewById(R.id.textViewCartName);
         textViewCartQuantity = itemView.findViewById(R.id.textViewCartQuantity);
         imageViewCartItem = itemView.findViewById(R.id.imageViewCartItem);
-        buttonCartRemove = itemView.findViewById(R.id.buttonCartRemove);
+
     }
 }
