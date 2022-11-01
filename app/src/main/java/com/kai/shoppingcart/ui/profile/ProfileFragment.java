@@ -123,8 +123,7 @@ public class ProfileFragment extends Fragment {
     }
 
     void onCancelClicked() {
-        NavHostFragment.findNavController(ProfileFragment.this)
-                .navigate(R.id.action_ProfileFragment_to_HomeFragment);
+        NavHostFragment.findNavController(this).popBackStack();
     }
 
     void onUpdateClicked() {

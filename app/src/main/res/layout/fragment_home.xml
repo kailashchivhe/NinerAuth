@@ -8,9 +8,23 @@
     android:weightSum="5"
     tools:context="com.kai.shoppingcart.ui.home.HomeFragment">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_weight="0.5"
+        android:layout_height="0dp">
+        <TextView
+            android:id="@+id/headerTextView"
+            android:textStyle="bold"
+            android:textSize="32sp"
+            android:text="All Aisles"
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </RelativeLayout>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewHome"
-        android:layout_weight="4.5"
+        android:layout_weight="4.0"
         android:layout_width="match_parent"
         android:layout_height="0dp" />
 

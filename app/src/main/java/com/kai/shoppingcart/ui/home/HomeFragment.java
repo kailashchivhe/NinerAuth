@@ -182,6 +182,10 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         binding = FragmentHomeBinding.inflate(inflater,container,false);
+        homeItemAdapter = new HomeItemAdapter(new ArrayList<Item>());
+        GridLayoutManager layoutManager=new GridLayoutManager(getContext(),2);
+        binding.recyclerViewHome.setLayoutManager(layoutManager);
+        binding.recyclerViewHome.setAdapter(homeItemAdapter);
         applicationPermission = new ApplicationPermission( requireActivity() );
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             applicationPermission.verifyPermissions();
@@ -214,9 +218,13 @@ public class HomeFragment extends Fragment {
     }
 
     private void setItemsOnView(List<Item> items) {
-        homeItemAdapter = new HomeItemAdapter(items);
-        binding.recyclerViewHome.setAdapter(homeItemAdapter);
-        homeItemAdapter.submit
+        String aisleType = "All";
+        if(CURRENT_BEACON != null) {
+            aisleType = data.get(CURRENT_BEACON);
+        }
+        binding.headerTextView.setText( aisleType.toUpperCase() + " Aisle");
+        homeItemAdapter.updateItemList( items );
+        homeItemAdapter.notifyDataSetChanged();
     }
 
     private void displayMessageToast(String s) {
@@ -229,10 +237,6 @@ public class HomeFragment extends Fragment {
         sharedPreferences = getActivity().getSharedPreferences("appPreferences", Context.MODE_PRIVATE);
         jwtToken = sharedPreferences.getString("jwtToken", "");
         email = sharedPreferences.getString("email", "");
-
-        GridLayoutManager layoutManager=new GridLayoutManager(getContext(),2);
-        binding.recyclerViewHome.setLayoutManager(layoutManager);
-
         binding.buttonCart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

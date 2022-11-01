@@ -29,6 +29,11 @@ public class HomeItemAdapter extends RecyclerView.Adapter<HomeItemHolder> {
         cartItemList = new ArrayList<>();
     }
 
+    public void updateItemList(List<Item> itemList){
+        this.itemList.clear();
+        this.itemList.addAll(itemList);
+    }
+
     @NonNull
     @Override
     public HomeItemHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

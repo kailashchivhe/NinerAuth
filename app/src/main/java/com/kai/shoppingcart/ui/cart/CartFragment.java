@@ -114,7 +114,7 @@ public class CartFragment extends Fragment {
 
     private void navigateToHome() {
         Toast.makeText(getContext(), "Transaction Complete", Toast.LENGTH_LONG).show();
-        NavHostFragment.findNavController(this).navigate(R.id.action_CartFragment_to_HomeFragment);
+        NavHostFragment.findNavController( this ).popBackStack();
     }
 
     private void getPaymentNonce(String token) {
