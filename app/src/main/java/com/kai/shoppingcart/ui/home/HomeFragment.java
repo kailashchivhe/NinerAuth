@@ -45,16 +45,11 @@ import java.util.Map;
 
 public class HomeFragment extends Fragment {
 
-    static String CURRENT_BEACON = null;
-    static String NEW_BEACON = null;
-    static int COUNT = 0;
-    static HashMap<String, String> data = new HashMap<>();
-    static {
-        data.put("B100", "produce");
-        data.put("B200", "grocery");
-        data.put("B300", "lifestyle");
-    }
-
+    private static final String BLUECAT_SDK_TOKEN = "06e8c088-fae4-419c-aeb6-c56e8def1c42";
+    private static String CURRENT_BEACON = null;
+    private static String NEW_BEACON = null;
+    private static int COUNT = 0;
+    private static HashMap<String, String> data = new HashMap<>();
     HomeViewModel homeViewModel;
     SharedPreferences sharedPreferences;
     String email;
@@ -64,92 +59,67 @@ public class HomeFragment extends Fragment {
     ApplicationPermission applicationPermission;
     BCBeaconManager beaconManager = new BCBeaconManager();
 
+    static {
+        data.put("B100", "produce");
+        data.put("B200", "grocery");
+        data.put("B300", "lifestyle");
+    }
+
     private final BCBeaconManagerCallback beaconManagerCallback = new BCBeaconManagerCallback()
     {
         @Override
         public void didRangeBlueCatsBeacons( final List<BCBeacon> beacons ) {
             Log.d("BLE", "didRangeBlueCatsBeacons: "+ beacons.size());
             super.didRangeBlueCatsBeacons(beacons);
-
-            if(beacons.size() <= 0)
-            {
-                if(CURRENT_BEACON != null){
-                    CURRENT_BEACON = null;
-                    homeViewModel.getItems(jwtToken, "all");
-                }
-                return;
-            }
-
-            HashMap<BCBeacon.BCProximity, ArrayList<String>> groups = new HashMap<>();
-            BCBeacon.BCProximity min = BCBeacon.BCProximity.BC_PROXIMITY_FAR;
-
-            for(BCBeacon beacon : beacons)
-            {
-                ArrayList<String> group = groups.getOrDefault(beacon.getProximity(), new ArrayList<>());
-                group.add(beacon.getName());
-                groups.put(beacon.getProximity(), group);
-
-                Log.d("ddd", "didRangeBlueCatsBeacons: " + beacon.getName() + " - " + beacon.getProximity());
-                if(beacon.getProximity().getValue() < min.getValue()) min = beacon.getProximity();
-            }
-
-            if(min == BCBeacon.BCProximity.BC_PROXIMITY_FAR){
-                if(CURRENT_BEACON != null){
-                    CURRENT_BEACON = null;
-                    homeViewModel.getItems(jwtToken, "all");
-                }
-                return;
-            }
-
-            ArrayList<String> closest_beacons = groups.get(min);
-            if(CURRENT_BEACON == null || !closest_beacons.contains(CURRENT_BEACON))
-            {
-                if(NEW_BEACON != null && !closest_beacons.contains(NEW_BEACON)){
-                    COUNT = 0;
-                    NEW_BEACON = closest_beacons.get(0);
-                    return;
-                }
-
-                if(NEW_BEACON == null){
-                    COUNT = 0;
-                    NEW_BEACON = closest_beacons.get(0);
-                }
-
-                if(COUNT++ > 4)
-                {
-                    CURRENT_BEACON = NEW_BEACON;
-                    NEW_BEACON = null;
-                    COUNT = 0;
-                    homeViewModel.getItems(jwtToken, data.get(CURRENT_BEACON));
-                }
-            }
+            onBeaconsObserved(beacons);
         }
     };
 
     @Override
-    public void onResume() {
-        super.onResume();
-        BlueCatsSDK.didEnterForeground();
-        beaconManager.registerCallback(beaconManagerCallback);
+    public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == MainActivity.RESULT_OK) {
+            if (applicationPermission != null) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    applicationPermission.verifyPermissions();
+                }
+            }
+        }
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        BlueCatsSDK.didEnterBackground();
-        beaconManager.unregisterCallback(beaconManagerCallback);
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (applicationPermission != null) {
+            applicationPermission.onRequestPermissionResult(requestCode, permissions, grantResults);
+        }
     }
 
+
     @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_home,menu);
-        super.onCreateOptionsMenu(menu, inflater);
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        sharedPreferences = getActivity().getSharedPreferences("appPreferences", Context.MODE_PRIVATE);
+        jwtToken = sharedPreferences.getString("jwtToken", "");
+        email = sharedPreferences.getString("email", "");
+        binding.buttonCart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onCartButtonClicked();
+            }
+        });
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_home,menu);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
@@ -167,33 +137,16 @@ public class HomeFragment extends Fragment {
         return false;
     }
 
-    private void onLogoutClicked() {
-        sharedPreferences.edit().remove("jwtToken").commit();
-        sharedPreferences.edit().remove("email").commit();
-        sharedPreferences.edit().remove("customerId").commit();
-        NavHostFragment.findNavController(this).navigate(R.id.action_HomeFragment_to_LoginFragment);
-    }
-
-    private void onProfileClicked() {
-        NavHostFragment.findNavController(this).navigate(R.id.action_HomeFragment_to_ProfileFragment);
-    }
-
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         binding = FragmentHomeBinding.inflate(inflater,container,false);
-        homeItemAdapter = new HomeItemAdapter(new ArrayList<Item>());
-        GridLayoutManager layoutManager=new GridLayoutManager(getContext(),2);
-        binding.recyclerViewHome.setLayoutManager(layoutManager);
-        binding.recyclerViewHome.setAdapter(homeItemAdapter);
-        applicationPermission = new ApplicationPermission( requireActivity() );
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            applicationPermission.verifyPermissions();
-        }
-        final Map<String, String> options = new HashMap<>();
-        options.put(BlueCatsSDK.BC_OPTION_DISCOVER_BEACONS_NEARBY, "true");
-        BlueCatsSDK.setOptions(options);
-        BlueCatsSDK.startPurringWithAppToken(requireActivity(), "06e8c088-fae4-419c-aeb6-c56e8def1c42");
+        initRecyclerView();
+
+        verifyBluetoothPermissions();
+
+        initBeaconSDK();
+
         return binding.getRoot();
     }
 
@@ -217,6 +170,41 @@ public class HomeFragment extends Fragment {
         });
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        BlueCatsSDK.didEnterForeground();
+        beaconManager.registerCallback(beaconManagerCallback);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        BlueCatsSDK.didEnterBackground();
+        beaconManager.unregisterCallback(beaconManagerCallback);
+    }
+
+    private void verifyBluetoothPermissions() {
+        applicationPermission = new ApplicationPermission( requireActivity() );
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            applicationPermission.verifyPermissions();
+        }
+    }
+
+    private void initBeaconSDK() {
+        final Map<String, String> options = new HashMap<>();
+        options.put(BlueCatsSDK.BC_OPTION_DISCOVER_BEACONS_NEARBY, "true");
+        BlueCatsSDK.setOptions(options);
+        BlueCatsSDK.startPurringWithAppToken(requireActivity(), BLUECAT_SDK_TOKEN );
+    }
+
+    private void initRecyclerView() {
+        homeItemAdapter = new HomeItemAdapter(new ArrayList<Item>());
+        GridLayoutManager layoutManager=new GridLayoutManager(getContext(),2);
+        binding.recyclerViewHome.setLayoutManager(layoutManager);
+        binding.recyclerViewHome.setAdapter(homeItemAdapter);
+    }
+
     private void setItemsOnView(List<Item> items) {
         String aisleType = "All";
         if(CURRENT_BEACON != null) {
@@ -231,18 +219,15 @@ public class HomeFragment extends Fragment {
         Toast.makeText(getContext(), s, Toast.LENGTH_LONG).show();
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        sharedPreferences = getActivity().getSharedPreferences("appPreferences", Context.MODE_PRIVATE);
-        jwtToken = sharedPreferences.getString("jwtToken", "");
-        email = sharedPreferences.getString("email", "");
-        binding.buttonCart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onCartButtonClicked();
-            }
-        });
+    private void onLogoutClicked() {
+        sharedPreferences.edit().remove("jwtToken").commit();
+        sharedPreferences.edit().remove("email").commit();
+        sharedPreferences.edit().remove("customerId").commit();
+        NavHostFragment.findNavController(this).navigate(R.id.action_HomeFragment_to_LoginFragment);
+    }
+
+    private void onProfileClicked() {
+        NavHostFragment.findNavController(this).navigate(R.id.action_HomeFragment_to_ProfileFragment);
     }
 
     private void onCartButtonClicked() {
@@ -263,23 +248,58 @@ public class HomeFragment extends Fragment {
         return df.format(total);
     }
 
-    @Override
-    public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == MainActivity.RESULT_OK) {
-            if (applicationPermission != null) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    applicationPermission.verifyPermissions();
-                }
+    private void onBeaconsObserved(List<BCBeacon> beacons) {
+        if(beacons.size() <= 0)
+        {
+            if(CURRENT_BEACON != null){
+                CURRENT_BEACON = null;
+                homeViewModel.getItems(jwtToken, "all");
             }
+            return;
         }
-    }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (applicationPermission != null) {
-            applicationPermission.onRequestPermissionResult(requestCode, permissions, grantResults);
+        HashMap<BCBeacon.BCProximity, ArrayList<String>> groups = new HashMap<>();
+        BCBeacon.BCProximity min = BCBeacon.BCProximity.BC_PROXIMITY_FAR;
+
+        for(BCBeacon beacon : beacons)
+        {
+            ArrayList<String> group = groups.getOrDefault(beacon.getProximity(), new ArrayList<>());
+            group.add(beacon.getName());
+            groups.put(beacon.getProximity(), group);
+
+            Log.d("ddd", "didRangeBlueCatsBeacons: " + beacon.getName() + " - " + beacon.getProximity());
+            if(beacon.getProximity().getValue() < min.getValue()) min = beacon.getProximity();
+        }
+
+        if(min == BCBeacon.BCProximity.BC_PROXIMITY_FAR){
+            if(CURRENT_BEACON != null){
+                CURRENT_BEACON = null;
+                homeViewModel.getItems(jwtToken, "all");
+            }
+            return;
+        }
+
+        ArrayList<String> closest_beacons = groups.get(min);
+        if(CURRENT_BEACON == null || !closest_beacons.contains(CURRENT_BEACON))
+        {
+            if(NEW_BEACON != null && !closest_beacons.contains(NEW_BEACON)){
+                COUNT = 0;
+                NEW_BEACON = closest_beacons.get(0);
+                return;
+            }
+
+            if(NEW_BEACON == null){
+                COUNT = 0;
+                NEW_BEACON = closest_beacons.get(0);
+            }
+
+            if(COUNT++ > 4)
+            {
+                CURRENT_BEACON = NEW_BEACON;
+                NEW_BEACON = null;
+                COUNT = 0;
+                homeViewModel.getItems(jwtToken, data.get(CURRENT_BEACON));
+            }
         }
     }
 }
