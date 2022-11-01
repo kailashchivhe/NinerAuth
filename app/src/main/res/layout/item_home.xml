@@ -1,124 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_width="190dp"
+    android:layout_height="170dp"
+    android:layout_margin="4dp"
+    app:cardCornerRadius="4dp">
 
-    <ImageView
-        android:id="@+id/imageViewItem"
-        android:layout_width="189dp"
-        android:layout_height="223dp"
-        android:layout_marginStart="8dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@tools:sample/avatars" />
+    <RelativeLayout
+        android:layout_margin="4dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/textViewName"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        android:text="TextView"
-        android:textAlignment="viewStart"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imageViewItem"
-        app:layout_constraintTop_toTopOf="parent" />
+        <ImageView
+            android:id="@+id/imageViewItem"
+            android:layout_width="120dp"
+            android:layout_height="100dp"
+            android:layout_marginStart="8dp"
+            android:layout_centerHorizontal="true"
+            tools:srcCompat="@tools:sample/avatars" />
 
-    <TextView
-        android:id="@+id/textViewPrice"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        android:text="TextView"
-        android:textAlignment="viewStart"
-        android:textColor="#E53935"
-        android:textStyle="italic"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.635"
-        app:layout_constraintStart_toEndOf="@+id/imageViewItem"
-        app:layout_constraintTop_toBottomOf="@+id/textViewName" />
+        <TextView
+            android:id="@+id/textViewName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="6dp"
+            android:text="TextView"
+            android:singleLine="true"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/imageViewItem"/>
 
-    <TextView
-        android:id="@+id/textViewFinalPrice"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        android:text="TextView"
-        android:textAlignment="viewStart"
-        android:textColor="#29CD30"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/imageViewItem"
-        app:layout_constraintTop_toBottomOf="@+id/textViewDiscount" />
+        <TextView
+            android:id="@+id/textViewPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="$50"
+            android:textColor="#E53935"
+            android:layout_margin="4dp"
+            android:textStyle="italic"
+            android:layout_below="@id/textViewName"
+            android:layout_alignParentLeft="true"/>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingActionButtonMinus"
-        android:layout_width="37dp"
-        android:layout_height="25dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginBottom="32dp"
-        android:clickable="true"
-        android:foreground="@drawable/minus"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imageViewItem"
-        app:layout_constraintTop_toBottomOf="@+id/textViewFinalPrice"
-        app:srcCompat="@drawable/ic_launcher_foreground" />
+        <TextView
+            android:id="@+id/textViewFinalPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="$45"
+            android:textAlignment="viewStart"
+            android:textColor="#29CD30"
+            android:layout_margin="4dp"
+            android:textStyle="bold"
+            android:layout_below="@id/textViewName"
+            android:layout_toRightOf="@id/textViewPrice"/>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingActionButtonPlus"
-        android:layout_width="25dp"
-        android:layout_height="27dp"
-        android:layout_marginEnd="8dp"
-        android:clickable="true"
-        android:foreground="@drawable/plus"
-        app:layout_constraintBottom_toBottomOf="@+id/floatingActionButtonMinus"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/textViewQuantity"
-        app:srcCompat="@android:drawable/btn_minus" />
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/floatingActionButtonMinus"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:clickable="true"
+            android:layout_marginTop="2dp"
+            android:layout_marginLeft="20dp"
+            android:layout_toRightOf="@id/textViewFinalPrice"
+            android:layout_below="@id/textViewName"
+            android:foreground="@drawable/minus"
+            app:srcCompat="@drawable/ic_launcher_foreground" />
 
-    <TextView
-        android:id="@+id/textViewQuantity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:text="TextView"
-        android:textAlignment="center"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toStartOf="@+id/floatingActionButtonPlus"
-        app:layout_constraintHorizontal_bias="0.55"
-        app:layout_constraintStart_toEndOf="@+id/floatingActionButtonMinus"
-        app:layout_constraintTop_toTopOf="@+id/floatingActionButtonMinus" />
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/floatingActionButtonPlus"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:clickable="true"
+            android:layout_margin="2dp"
+            android:layout_toRightOf="@id/textViewQuantity"
+            android:layout_below="@id/textViewName"
+            android:foreground="@drawable/plus"
+            app:srcCompat="@android:drawable/btn_minus" />
 
-    <androidx.constraintlayout.widget.Barrier
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:barrierDirection="top"
-        tools:layout_editor_absoluteX="163dp"
-        tools:layout_editor_absoluteY="277dp" />
+        <TextView
+            android:id="@+id/textViewQuantity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="10"
+            android:layout_margin="2dp"
+            android:layout_toRightOf="@id/floatingActionButtonMinus"
+            android:layout_below="@id/textViewName"
+            android:textSize="16sp"/>
 
-    <TextView
-        android:id="@+id/textViewDiscount"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        android:text="TextView"
-        android:textAlignment="viewStart"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imageViewItem"
-        app:layout_constraintTop_toBottomOf="@+id/textViewPrice" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>

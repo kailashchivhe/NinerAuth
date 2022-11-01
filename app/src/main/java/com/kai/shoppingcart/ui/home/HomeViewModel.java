@@ -23,8 +23,8 @@ public class HomeViewModel extends AndroidViewModel implements ItemRetrivalListe
         messageMutableLiveData = new MutableLiveData<>();
     }
 
-    void getItems(String jwtToken){
-        APIHelper.itemRetrival(jwtToken,this);
+    void getItems(String jwtToken, String region){
+        APIHelper.itemRetrival(jwtToken, region,this);
     }
 
     MutableLiveData<String> getMessageMutableLiveData(){

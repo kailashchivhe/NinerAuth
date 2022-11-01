@@ -205,9 +205,10 @@ public class APIHelper {
 
     }
 
-    public static void itemRetrival(String jwtToken, ItemRetrivalListener itemRetrivalListener){
+    public static void itemRetrival(String jwtToken, String region, ItemRetrivalListener itemRetrivalListener){
         HttpUrl url = HttpUrl.parse("https://node-authenticator-uncc.herokuapp.com/api/auth/items").newBuilder()
                 .addQueryParameter("token",jwtToken)
+                .addQueryParameter("region", region)
                 .build();
         Request request = new Request.Builder()
                 .url(url)

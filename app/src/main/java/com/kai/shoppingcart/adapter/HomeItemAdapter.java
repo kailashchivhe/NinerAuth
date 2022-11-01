@@ -1,5 +1,6 @@
 package com.kai.shoppingcart.adapter;
 
+import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,11 +41,11 @@ public class HomeItemAdapter extends RecyclerView.Adapter<HomeItemHolder> {
     public void onBindViewHolder(@NonNull HomeItemHolder holder, int position) {
         Item item = itemList.get(position);
         holder.textViewName.setText(item.getName());
-        holder.textViewPrice.setText("Before Price $: "+ df.format(item.getPrice()));
-        holder.textViewDiscount.setText("Discount: " + item.getDiscount() +"%");
+        holder.textViewPrice.setText("$"+ df.format(item.getPrice()));
+        holder.textViewPrice.setPaintFlags(holder.textViewPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         holder.textViewQuantity.setText("0");
         double finalPrice = item.getPrice() - ((item.getDiscount() * item.getPrice())/100);
-        holder.textViewFinalPrice.setText("Discounted Price $: " + df.format(finalPrice));
+        holder.textViewFinalPrice.setText("$" + df.format(finalPrice));
 
         Picasso.get().load(item.getUri()).placeholder(R.mipmap.ic_launcher_round).into(holder.imageViewItem);
         holder.floatingActionButtonPlus.setOnClickListener(new View.OnClickListener() {
@@ -106,7 +107,6 @@ class HomeItemHolder extends RecyclerView.ViewHolder{
     TextView textViewPrice;
     TextView textViewFinalPrice;
     TextView textViewQuantity;
-    TextView textViewDiscount;
     ImageView imageViewItem;
     FloatingActionButton floatingActionButtonPlus;
     FloatingActionButton floatingActionButtonMinus;
@@ -117,7 +117,6 @@ class HomeItemHolder extends RecyclerView.ViewHolder{
         textViewPrice = itemView.findViewById(R.id.textViewPrice);
         textViewFinalPrice = itemView.findViewById(R.id.textViewFinalPrice);
         textViewQuantity = itemView.findViewById(R.id.textViewQuantity);
-        textViewDiscount = itemView.findViewById(R.id.textViewDiscount);
         imageViewItem = itemView.findViewById(R.id.imageViewItem);
         floatingActionButtonPlus = itemView.findViewById(R.id.floatingActionButtonPlus);
         floatingActionButtonMinus = itemView.findViewById(R.id.floatingActionButtonMinus);

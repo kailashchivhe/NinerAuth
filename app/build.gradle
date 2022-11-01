@@ -45,4 +45,5 @@ dependencies {
     implementation 'de.hdodenhof:circleimageview:3.1.0'
     implementation 'com.braintreepayments.api:drop-in:5.2.2'
     implementation 'androidx.gridlayout:gridlayout:1.0.0'
+    implementation 'com.bluecats:bluecats-android-sdk:2.1.8'
 }
