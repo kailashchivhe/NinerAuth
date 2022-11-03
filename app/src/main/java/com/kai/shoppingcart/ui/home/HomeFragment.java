@@ -28,6 +28,8 @@ import android.widget.Toast;
 import com.bluecats.sdk.BCBeacon;
 import com.bluecats.sdk.BCBeaconManager;
 import com.bluecats.sdk.BCBeaconManagerCallback;
+import com.bluecats.sdk.BCEventFilter;
+import com.bluecats.sdk.BCSite;
 import com.bluecats.sdk.BlueCatsSDK;
 import com.kai.shoppingcart.MainActivity;
 import com.kai.shoppingcart.R;
@@ -41,13 +43,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 
 public class HomeFragment extends Fragment {
 
     private static final String BLUECAT_SDK_TOKEN = "06e8c088-fae4-419c-aeb6-c56e8def1c42";
+    public static final int BEACON_MAX_RANGE = 5;
     private static String CURRENT_BEACON = null;
-    private static String NEW_BEACON = null;
     private static int COUNT = 0;
     private static HashMap<String, String> data = new HashMap<>();
     HomeViewModel homeViewModel;
@@ -75,6 +78,7 @@ public class HomeFragment extends Fragment {
         }
     };
 
+
     @Override
     public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -99,9 +103,6 @@ public class HomeFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        sharedPreferences = getActivity().getSharedPreferences("appPreferences", Context.MODE_PRIVATE);
-        jwtToken = sharedPreferences.getString("jwtToken", "");
-        email = sharedPreferences.getString("email", "");
         binding.buttonCart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -114,6 +115,11 @@ public class HomeFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        sharedPreferences = getActivity().getSharedPreferences("appPreferences", Context.MODE_PRIVATE);
+        jwtToken = sharedPreferences.getString("jwtToken", "");
+        email = sharedPreferences.getString("email", "");
+        homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
+        homeViewModel.getItems( jwtToken, "all" );
     }
 
     @Override
@@ -153,8 +159,6 @@ public class HomeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
-
         homeViewModel.getMessageMutableLiveData().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String s) {
@@ -251,55 +255,44 @@ public class HomeFragment extends Fragment {
     private void onBeaconsObserved(List<BCBeacon> beacons) {
         if(beacons.size() <= 0)
         {
-            if(CURRENT_BEACON != null){
-                CURRENT_BEACON = null;
-                homeViewModel.getItems(jwtToken, "all");
-            }
+            homeViewModel.getItems(jwtToken, "all");
             return;
         }
 
-        HashMap<BCBeacon.BCProximity, ArrayList<String>> groups = new HashMap<>();
-        BCBeacon.BCProximity min = BCBeacon.BCProximity.BC_PROXIMITY_FAR;
-
-        for(BCBeacon beacon : beacons)
+        Double min = beacons.get(0).getAccuracy();
+        String minBeacon = beacons.get(0).getName();
+        for(int i = 1; i < beacons.size(); i++)
         {
-            ArrayList<String> group = groups.getOrDefault(beacon.getProximity(), new ArrayList<>());
-            group.add(beacon.getName());
-            groups.put(beacon.getProximity(), group);
-
-            Log.d("ddd", "didRangeBlueCatsBeacons: " + beacon.getName() + " - " + beacon.getProximity());
-            if(beacon.getProximity().getValue() < min.getValue()) min = beacon.getProximity();
+            if( beacons.get(i).getAccuracy() < min ){
+                minBeacon = beacons.get(i).getName();
+                min = beacons.get(i).getAccuracy();
+            }
         }
 
-        if(min == BCBeacon.BCProximity.BC_PROXIMITY_FAR){
-            if(CURRENT_BEACON != null){
-                CURRENT_BEACON = null;
-                homeViewModel.getItems(jwtToken, "all");
-            }
+        if( min > BEACON_MAX_RANGE){
+            homeViewModel.getItems( jwtToken, "all" );
+            CURRENT_BEACON = null;
+            COUNT = 0;
             return;
         }
 
-        ArrayList<String> closest_beacons = groups.get(min);
-        if(CURRENT_BEACON == null || !closest_beacons.contains(CURRENT_BEACON))
-        {
-            if(NEW_BEACON != null && !closest_beacons.contains(NEW_BEACON)){
-                COUNT = 0;
-                NEW_BEACON = closest_beacons.get(0);
-                return;
-            }
+        if( CURRENT_BEACON == null ){
+            CURRENT_BEACON = minBeacon;
+            return;
+        }
 
-            if(NEW_BEACON == null){
-                COUNT = 0;
-                NEW_BEACON = closest_beacons.get(0);
-            }
+        if( minBeacon.contains(CURRENT_BEACON) ){
+            COUNT++;
+        }
+        else{
+            CURRENT_BEACON = minBeacon;
+            COUNT = 0;
+        }
 
-            if(COUNT++ > 4)
-            {
-                CURRENT_BEACON = NEW_BEACON;
-                NEW_BEACON = null;
-                COUNT = 0;
-                homeViewModel.getItems(jwtToken, data.get(CURRENT_BEACON));
-            }
+        if( COUNT > 2 && minBeacon.contains(CURRENT_BEACON)){
+            CURRENT_BEACON = minBeacon;
+            COUNT = 0;
+            homeViewModel.getItems(jwtToken, data.get(CURRENT_BEACON));
         }
     }
 }
